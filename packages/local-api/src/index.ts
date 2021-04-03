@@ -1,3 +1,3 @@
 export default () => {
-  console.log("Serve is listening");
+  console.log("Server is listening");
 };
