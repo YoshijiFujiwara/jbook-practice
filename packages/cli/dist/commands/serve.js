@@ -43,6 +43,7 @@ exports.serveCommand = void 0;
 var path_1 = __importDefault(require("path"));
 var commander_1 = require("commander");
 var local_api_1 = require("local-api");
+var isProduction = process.env.NODE_ENV === "production";
 exports.serveCommand = new commander_1.Command()
     .command("serve [filename]")
     .description("Open a file for editing")
@@ -56,13 +57,19 @@ exports.serveCommand = new commander_1.Command()
                 case 0:
                     _a.trys.push([0, 2, , 3]);
                     dir = path_1.default.join(process.cwd(), path_1.default.dirname(filename));
-                    return [4 /*yield*/, local_api_1.serve(parseInt(options.port), filename, dir)];
+                    return [4 /*yield*/, local_api_1.serve(parseInt(options.port), filename, dir, !isProduction)];
                 case 1:
                     _a.sent();
                     return [3 /*break*/, 3];
                 case 2:
                     err_1 = _a.sent();
-                    console.log("Heres the problem", err_1.message);
+                    if (err_1.code === "EADDRINUSE") {
+                        console.error("Port is in use. Try running on a different port.");
+                    }
+                    else {
+                        console.log("Heres the problem", err_1.message);
+                    }
+                    process.exit(1);
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }

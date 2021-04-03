@@ -2,6 +2,8 @@ import path from "path";
 import { Command } from "commander";
 import { serve } from "local-api";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export const serveCommand = new Command()
   .command("serve [filename]")
   .description("Open a file for editing")
@@ -9,7 +11,7 @@ export const serveCommand = new Command()
   .action(async (filename = "notebook.js", options) => {
     try {
       const dir = path.join(process.cwd(), path.dirname(filename));
-      await serve(parseInt(options.port), filename, dir);
+      await serve(parseInt(options.port), filename, dir, !isProduction);
     } catch (err) {
       if (err.code === "EADDRINUSE") {
         console.error("Port is in use. Try running on a different port.");
